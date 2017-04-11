@@ -2,7 +2,7 @@
 
 // Add Service Worker
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js', { scope: '/' }).then(function(reg) {
+  navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(reg) {
 
     if (reg.installing) {
       console.log('Service worker installing');
@@ -55,7 +55,7 @@ window.addEventListener('WebComponentsReady', function(e) {
     tr.crop('thumb').gravity('face').height('500').width('500').chain()
       .crop('fill').height('150').width('300').chain()
       .overlay('cloudinary_logo').gravity('south_east').width('100').opacity('70').x('10').y('10');
-    $.get('/images.json', function(result, error) {
+    $.get('./images.json', function(result, error) {
       $('#person-list').html('');
       result.forEach(function(value) {
         var personThumbImage = cl.url(value.publicId, tr);
