@@ -1,0 +1,52 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <!-- WebComponents -->
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <!-- Import Components -->
+    <link rel="import" href="/components/photo-thumb.html">
+    <link rel="import" href="/components/photo-view.html">
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="/" class="brand-logo" id="nav-logo" >
+        </a>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="modal modal-fixed-footer">
+        <div class="modal-content"  id="person-view">
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+        </div>
+      </div>
+      <div class="row" id="person-list">
+        Loading..
+      </div>
+    </div>
+    <footer class="page-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="white-text">jQuery Progressive Web App Demo</h5>
+            <p class="grey-text text-lighten-4">See how to super charge your web app by following the tenets of Progressive Web Apps and using service worker progressively.</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+        © 2017 Copyright Cloudinary
+        <a class="grey-text text-lighten-4 right" href="https://elsmore.me">Made with &#9829; by Mike Elsmore</a>
+        </div>
+      </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.2.1.js" type="text/javascript"></script>
+    <script src="bower_components/cloudinary-jquery/cloudinary-jquery.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <script src="./app.js" type="text/javascript"></script>
+  </body>
+</html>
