@@ -4,7 +4,7 @@
     <title>jQuery Progressive Web App Demo</title>
 
     <!-- Manifest -->
-    <link rel="manifest" href="/manifest.webapp">
+    <link rel="manifest" href="/manifest.json">
 
     <!-- Display -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,11 +14,6 @@
     <!-- Style -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
     <link rel="stylesheet" href="./style.css">
-    <!-- WebComponents -->
-    <script src="./bower_components/webcomponentsjs/webcomponents.js"></script>
-    <!-- Import Components -->
-    <link rel="import" href="./components/photo-thumb.html">
-    <link rel="import" href="./components/photo-view.html">
   </head>
   <body>
     <nav>
@@ -55,9 +50,111 @@
         <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.js" type="text/javascript"></script>
-    <script src="./bower_components/cloudinary-jquery/cloudinary-jquery.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+    <script src="https://unpkg.com/jquery" type="text/javascript"></script>
+    <script src="https://unpkg.com/cloudinary-jquery" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
-    <script src="./app.js" type="text/javascript"></script>
+    <script type="text/babel">
+    // Add Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(reg) {
+
+        if (reg.installing) {
+          console.log('Service worker installing');
+        } else if (reg.waiting) {
+          console.log('Service worker installed');
+        } else if (reg.active) {
+          console.log('Service worker active');
+        }
+
+      }).catch(function(error) {
+        // registration failed
+        console.log('Registration failed with ' + error);
+      });
+    }
+
+    $(document).ready(function() {
+
+      // Apply Modal
+      $('.modal').modal();
+
+      // Instantiate the Cloudinary jQuery module
+      const cl = cloudinary.CloudinaryJQuery.new( { cloud_name: "elsmore-me"});
+
+      // Apply the Cloudinary logo to the header
+      let cloudinaryLogo = cl.imageTag("cloudinary_logo");
+      cloudinaryLogo.transformation().width(200);
+      $('nav #nav-logo').html(cloudinaryLogo.toHtml());
+
+      // View the photo
+      function viewPhoto() {
+        let publicId = $(this).attr('public-id');
+        $.get('./images.json', function(result, error) {
+          result.forEach(function(value) {
+            if(value.publicId == publicId) {
+              let tr = cloudinary.Transformation.new();
+              tr.overlay('cloudinary_logo').width('500').x('10').y('10').opacity('70').gravity('south_east');
+              let imageUrlOriginal = cl.url(publicId, tr);
+              tr.chain().crop('fit').width('800');
+              let imageUrl = cl.url(publicId, tr);
+              $('#person-view').html(`
+                <div class="col s12" >
+                  <h1 class="center-align">${value.name}</h1>
+                </div>
+                <div class="row">
+                  <div class="col l7 s12" >
+                    <div class="row" >
+                      <img src="${imageUrl}" alt="${value.name}" width="100%"/>
+                    </div>
+                    <div class="row center-align">
+                      <a class="waves-effect waves-light btn" href="${imageUrlOriginal}" target="_blank" >View full</a>
+                    </div>
+                  </div>
+                  <div class="col l5 s12" >
+                    <p class="flow-text" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempor massa a odio convallis fermentum. Ut imperdiet arcu sed fermentum luctus. Duis placerat auctor turpis ac varius. In libero sapien, laoreet mollis felis viverra, egestas eleifend arcu. Aliquam dapibus enim a bibendum semper. Etiam elit sapien, commodo vestibulum lacus sed, congue mollis sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Suspendisse et nisi pulvinar, eleifend leo sit amet, semper quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse mattis rutrum tellus, dapibus efficitur arcu dignissim nec. Praesent sed rutrum orci. Quisque et urna vel orci interdum varius ac id ex. Sed magna massa, cursus sit amet posuere quis, sollicitudin pellentesque eros. Proin imperdiet nibh id urna dapibus, at luctus orci fringilla. Aenean ut enim tristique, blandit lacus sed, luctus elit. Nulla ac viverra diam, quis vestibulum sapien.</p>
+                    <p>Sed tincidunt mattis sapien et bibendum. Etiam sollicitudin augue ut nibh lacinia, sollicitudin pretium ante fringilla. Nam interdum diam id tellus dapibus, eu tincidunt elit interdum. Aliquam ligula nunc, vestibulum sit amet pharetra eu, vestibulum ut orci. Etiam sed urna purus. Nunc varius, velit nec sodales tincidunt, lacus justo pharetra est, a faucibus magna ante at mauris. Nam dictum ornare nunc vel interdum. Duis eget ornare justo. Phasellus non tempor quam, et rutrum sem. Etiam molestie pulvinar suscipit. Pellentesque semper, lacus ac scelerisque rhoncus, libero erat convallis diam, a interdum odio metus nec ante. Sed pellentesque tortor porttitor turpis efficitur lacinia. Quisque pharetra luctus nisi in vestibulum.</p>
+                    <p>Vestibulum dictum elit sed velit vehicula suscipit. Aliquam semper, nunc vel mollis semper, neque metus fermentum quam, a placerat nisi erat ornare erat. Pellentesque pulvinar, magna quis finibus placerat, metus justo elementum lectus, at elementum sem eros eget enim. Nulla tortor velit, gravida ac nibh vel, porta ornare elit. Pellentesque at fermentum elit. Maecenas pharetra tempor orci eu iaculis. Suspendisse potenti. Proin pretium condimentum venenatis.</p>
+                    <p>Vestibulum pellentesque orci mi, eu pellentesque felis aliquam nec. Suspendisse pharetra mattis facilisis. Nam egestas faucibus odio, sed mattis ante tincidunt sit amet. Vestibulum leo purus, efficitur porttitor ipsum luctus, bibendum imperdiet odio. Praesent nibh lacus, pulvinar non euismod sed, volutpat at augue. Pellentesque enim leo, maximus nec arcu ac, posuere pellentesque elit. Suspendisse molestie sed justo eget facilisis.</p>
+                    <p>Cras finibus dignissim nulla, ac porta ligula pretium vel. Vivamus non dolor lectus. Duis magna ligula, fringilla ac ex eu, aliquam semper erat. Donec non ipsum at tellus mattis sagittis fringilla quis libero. Nam aliquet rutrum libero, id finibus odio ornare hendrerit. Sed eget nulla lacinia, malesuada arcu non, commodo neque. Duis quis varius libero, ut volutpat justo.</p>
+                  </div>
+                </div>
+              `)
+              $('.modal').modal('open');
+            }
+          });
+        });
+      };
+
+      // List out the images
+      let tr = cloudinary.Transformation.new();
+      tr.crop('thumb').gravity('face').height('500').width('500').chain()
+        .crop('fill').height('150').width('300').chain()
+        .overlay('cloudinary_logo').gravity('south_east').width('100').opacity('70').x('10').y('10');
+      $.get('./images.json', function(result, error) {
+        $('#person-list').html('');
+        result.forEach(function(value) {
+          let personThumbImage = cl.url(value.publicId, tr);
+          // $('#person-list').append('<div class="col l3 m4 s12"><photo-thumb id="'+value.publicId+'" public-id="'+value.publicId+'" image-url="'+personThumbImage+'" image-name="'+value.name+'"></photo-thumb></div>');
+          $('#person-list').append(`
+            <div class="col l3 m4 s12">
+              <div class="card hoverable small">
+                <div class="card-image">
+                  <img src="${personThumbImage}" alt="" />
+                  <span class="card-title">${value.name}</span>
+                </div>
+                <div class="card-content">
+                  <p>This photo could be of anything, but faces help prove a point.</p>
+                </div>
+                <div class="card-action">
+                  <a class="photo-view" public-id="${value.publicId}" href="#!">Go Big</a>
+                </div>
+              </div>
+            </div>
+          `);
+          $('.photo-view').on('click', viewPhoto);
+        });
+      });
+    });
+    </script>
   </body>
 </html>
