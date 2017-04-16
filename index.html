@@ -87,7 +87,9 @@
       $('nav #nav-logo').html(cloudinaryLogo.toHtml());
 
       // View the photo
-      function viewPhoto() {
+      function viewPhoto(e) {
+        e.preventDefault();
+
         let publicId = $(this).attr('public-id');
         $.get('./images.json', function(result, error) {
           result.forEach(function(value) {

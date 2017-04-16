@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var cacheNameStatic = 'cloudinary-pwa-jquery-v1';
+  var cacheNameStatic = 'cloudinary-pwa-jquery-v2';
 
   var currentCacheNames = [ cacheNameStatic ];
 
@@ -9,15 +9,11 @@
     // 3rd party CDN
     'https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js',
-    'https://code.jquery.com/jquery-3.2.1.js',
+    'https://unpkg.com/babel-core@5.8.38/browser.min.js',
+    'https://unpkg.com/jquery',
+    'https://unpkg.com/cloudinary-jquery',
     // Local assets
     '/style.css',
-    '/app.js',
-    '/bower_components/webcomponentsjs/webcomponents.js',
-    '/bower_components/cloudinary-jquery/cloudinary-jquery.js',
-    // Components
-    '/components/photo-thumb.html',
-    '/components/photo-view.html',
     // Fake API
     '/images.json'
   ];
